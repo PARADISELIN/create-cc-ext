@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "sourceMap": true,
+    "baseUrl": ".",
+    "rootDir": "lib",
+    "lib": ["esnext"],
+    "outDir": "dist/lib",
+    "allowJs": true,
+    "strict": true,
+    "declaration": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["lib"],
+  "exclude": [
+    "node_modules"
+  ]
+}

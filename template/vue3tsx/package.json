@@ -1,0 +1,67 @@
+{
+  "package_version": 2,
+  "version": "1.0.0",
+  "name": "vue3tsx",
+  "description": "i18n:vue3tsx.description",
+  "main": "./dist/main.js",
+  "dependencies": {
+    "fs-extra": "^10.0.0",
+    "vue": "^3.1.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.16.8",
+    "@babel/core": "^7.16.7",
+    "@babel/plugin-transform-modules-commonjs": "^7.16.8",
+    "@babel/preset-typescript": "^7.16.7",
+    "@types/fs-extra": "^9.0.5",
+    "@types/node": "^16.0.1",
+    "@vue/babel-plugin-jsx": "^1.1.1",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.3.4"
+  },
+  "panels": {
+    "default": {
+      "title": "vue3tsx Default Panel",
+      "type": "dockable",
+      "main": "dist/panels/default/script",
+      "size": {
+        "min-width": 400,
+        "min-height": 300,
+        "width": 1024,
+        "height": 600
+      }
+    }
+  },
+  "contributions": {
+    "menu": [
+      {
+        "path": "i18n:menu.panel/vue3tsx",
+        "label": "i18n:counter.open_panel",
+        "message": "open-panel"
+      },
+      {
+        "path": "i18n:menu.develop/vue3tsx",
+        "label": "i18n:counter.send_to_panel",
+        "message": "send-to-panel"
+      }
+    ],
+    "messages": {
+      "open-panel": {
+        "methods": [
+          "openPanel"
+        ]
+      },
+      "send-to-panel": {
+        "methods": [
+          "default.hello"
+        ]
+      }
+    }
+  },
+  "author": "Cocos Creator",
+  "editor": ">=3.4.0",
+  "scripts": {
+    "build": "rimraf dist && babel src -d dist -x \".ts,.tsx\"",
+    "watch": "rimraf dist && babel src -d dist -x \".ts,.tsx\" -w"
+  }
+}

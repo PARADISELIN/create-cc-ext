@@ -1,0 +1,70 @@
+{
+  "name": "create-cc-ext",
+  "version": "1.0.0",
+  "description": "A CLI tool for creating cocos creator extension.",
+  "author": "paradise <lin92731@outlook.com>",
+  "license": "MIT",
+  "bin": {
+    "create-cc-ext": "outfile.cjs"
+  },
+  "files": [
+    "outfile.cjs",
+    "template"
+  ],
+  "engines": {
+    "node": "^14.13.1 || >=16.0.0"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "format": "prettier --write",
+    "build": "esbuild --bundle lib/index.ts --format=cjs --platform=node --outfile=outfile.cjs",
+    "prepare": "husky install",
+    "commit": "cz"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PARADISELIN/create-cc-ext.git"
+  },
+  "bugs": {
+    "url": "https://github.com/PARADISELIN/create-cc-ext/issues"
+  },
+  "homepage": "https://github.com/PARADISELIN/create-cc-ext#readme",
+  "dependencies": {
+    "typescript": "^4.5.4"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^16.0.2",
+    "@commitlint/config-conventional": "^16.0.0",
+    "@types/figlet": "^1.5.4",
+    "@types/fs-extra": "^9.0.13",
+    "@types/node": "^17.0.8",
+    "@types/prompts": "^2.0.14",
+    "@typescript-eslint/eslint-plugin": "^5.9.1",
+    "@typescript-eslint/parser": "^5.9.1",
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "3.3.0",
+    "esbuild": "^0.14.11",
+    "eslint": "^8.6.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "figlet": "^1.5.2",
+    "fs-extra": "^10.0.0",
+    "husky": "^7.0.4",
+    "kolorist": "^1.5.1",
+    "lint-staged": "^12.1.7",
+    "prettier": "^2.5.1",
+    "prompts": "^2.4.2",
+    "rimraf": "^3.0.2"
+  },
+  "lint-staged": {
+    "src/**/*.{js,ts}": [
+      "prettier-eslint --write",
+      "eslint --fix"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}

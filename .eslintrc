@@ -1,0 +1,15 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "prettier",
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "prettier"
+  ],
+  "rules": {
+    "no-var": "error",
+    "prettier/prettier": "error"
+  }
+}
