@@ -62,7 +62,12 @@ export function getTargetDirname(
 ): string {
   const isProjectScope = scope === 0
 
+  // TODO: optimize
   if (isProjectScope) {
+    const projectExtensionPath = path.join(projectPath, extensionDirname)
+    if (!fs.existsSync(projectExtensionPath)) {
+      fs.mkdirSync(projectExtensionPath)
+    }
     return path.join(projectPath, extensionDirname, extensionName)
   }
 

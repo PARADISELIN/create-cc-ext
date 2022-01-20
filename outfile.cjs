@@ -10871,6 +10871,10 @@ function canSafelyOverwrite(dir) {
 function getTargetDirname(scope, projectPath, extensionName) {
   const isProjectScope = scope === 0;
   if (isProjectScope) {
+    const projectExtensionPath = import_path.default.join(projectPath, extensionDirname);
+    if (!import_fs_extra.default.existsSync(projectExtensionPath)) {
+      import_fs_extra.default.mkdirSync(projectExtensionPath);
+    }
     return import_path.default.join(projectPath, extensionDirname, extensionName);
   }
   return import_path.default.join(getGlobalCreatorExtensionPath(), extensionName);
@@ -10980,7 +10984,7 @@ var promptsQuestions = [
   {
     name: "projectName",
     type: (prev, values) => {
-      if (!projectsInfo) {
+      if (values.extensionScope === 0 && !projectsInfo) {
         throw new Error(red("\u2716") + " Operation cancelled, you may not have any cocos projects yet.");
       }
       return values.extensionScope === 0 && projectsInfo ? "select" : null;
@@ -11065,6 +11069,7 @@ ${blue("An easy way to create a cocos creator extension.")}
     const project = isProjectScope && projectIdx !== void 0 ? projectNameChoices[projectIdx] : null;
     const projectPath = project ? project.path : "";
     const root = getTargetDirname(extensionScope, projectPath, extensionName);
+    console.log(root);
     if (shouldOverwrite) {
       import_fs_extra2.default.emptyDirSync(root);
     } else if (!import_fs_extra2.default.existsSync(root)) {
@@ -11079,8 +11084,9 @@ Scaffolding project in ${root}...
       encoding: "utf-8"
     });
     const pkgObj = JSON.parse(pkgJson);
+    console.log("239", isProjectScope);
     pkgObj.name = extensionName;
-    pkgObj.editor = ">=" + isProjectScope ? project.version : editorVersion;
+    pkgObj.editor = ">=" + isProjectScope ? project == null ? void 0 : project.version : editorVersion;
     pkgObj.description = `i18n:${extensionName}.description`;
     if (pkgObj.panels) {
       pkgObj.panels.default.title = `${extensionName} Default Panel`;
@@ -11113,7 +11119,7 @@ Done. Now run:
 `);
     const cwd = process.cwd();
     if (root !== cwd) {
-      console.log(`  ${bold(green(`cd ${import_path2.default.relative(cwd, root)}`))}\r
+      console.log(`  ${bold(green(`cd ${root}`))}\r
 `);
     }
     console.log(`  ${bold(green("yarn install"))}`);

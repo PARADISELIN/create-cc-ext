@@ -106,7 +106,7 @@ const promptsQuestions: PromptObject[] = [
   {
     name: 'projectName',
     type: (prev, values) => {
-      if (!projectsInfo) {
+      if (values.extensionScope === 0 && !projectsInfo) {
         throw new Error(
           red('✖') +
             ' Operation cancelled, you may not have any cocos projects yet.'
@@ -216,6 +216,8 @@ async function init() {
   const projectPath = project ? project.path : ''
   const root = getTargetDirname(extensionScope, projectPath, extensionName)
 
+  console.log(root)
+
   // overwrite target dir
   if (shouldOverwrite) {
     fs.emptyDirSync(root)
@@ -236,8 +238,9 @@ async function init() {
     encoding: 'utf-8'
   })
   const pkgObj = JSON.parse(pkgJson)
+  console.log('239', isProjectScope)
   pkgObj.name = extensionName
-  pkgObj.editor = '>=' + isProjectScope ? project.version : editorVersion
+  pkgObj.editor = '>=' + isProjectScope ? project?.version : editorVersion
   pkgObj.description = `i18n:${extensionName}.description`
 
   // FIXME: this is temporary handle
@@ -284,9 +287,10 @@ async function init() {
 
   // finish log
   console.log(`\nDone. Now run:\n`)
+
   const cwd = process.cwd()
   if (root !== cwd) {
-    console.log(`  ${bold(green(`cd ${path.relative(cwd, root)}`))}\r\n`)
+    console.log(`  ${bold(green(`cd ${root}`))}\r\n`)
   }
   console.log(`  ${bold(green('yarn install'))}`)
   console.log(`  ${bold(green('yarn build'))}`)
