@@ -16,7 +16,7 @@ const Counter = defineComponent({
     return () => (
       <div class="counter">
         <h2>{counter.value}</h2>
-        <ui-button class="blue"onClick={addition}>+</ui-button>
+        <ui-button class="blue" onClick={addition}>+</ui-button>
         <ui-button onClick={subtraction}>-</ui-button>
       </div>
     )
