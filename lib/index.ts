@@ -26,7 +26,7 @@ type PromptsResult = {
   extensionTemplate: number
 }
 
-const defaultExtensionName = 'cocos-extension'
+const defaultExtensionName = 'cc-extension'
 const scopeChoices = [
   { title: 'Project', description: 'project extension' },
   { title: 'Global', description: 'global extension' }
