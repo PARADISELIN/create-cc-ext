@@ -10927,7 +10927,7 @@ function getCocosProjectsInfo() {
 
 // lib/index.ts
 import_figlet.default.parseFont("Big", Big_default);
-var defaultExtensionName = "cocos-extension";
+var defaultExtensionName = "cc-extension";
 var scopeChoices = [
   { title: "Project", description: "project extension" },
   { title: "Global", description: "global extension" }
