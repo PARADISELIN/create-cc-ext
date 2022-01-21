@@ -11049,7 +11049,6 @@ ${blue("An easy way to create a cocos creator extension.")}
         console.log(blue(data));
       }
     });
-    console.log(process.env.npm_execpath);
     let result = {};
     try {
       result = yield (0, import_prompts.default)(promptsQuestions, promptsOptions);
@@ -11069,7 +11068,6 @@ ${blue("An easy way to create a cocos creator extension.")}
     const project = isProjectScope && projectIdx !== void 0 ? projectNameChoices[projectIdx] : null;
     const projectPath = project ? project.path : "";
     const root = getTargetDirname(extensionScope, projectPath, extensionName);
-    console.log(root);
     if (shouldOverwrite) {
       import_fs_extra2.default.emptyDirSync(root);
     } else if (!import_fs_extra2.default.existsSync(root)) {
@@ -11084,7 +11082,6 @@ Scaffolding project in ${root}...
       encoding: "utf-8"
     });
     const pkgObj = JSON.parse(pkgJson);
-    console.log("239", isProjectScope);
     pkgObj.name = extensionName;
     pkgObj.editor = ">=" + isProjectScope ? project == null ? void 0 : project.version : editorVersion;
     pkgObj.description = `i18n:${extensionName}.description`;
