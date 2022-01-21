@@ -189,8 +189,6 @@ async function init() {
     }
   })
 
-  console.log(process.env.npm_execpath)
-
   let result = {}
 
   try {
@@ -216,8 +214,6 @@ async function init() {
   const projectPath = project ? project.path : ''
   const root = getTargetDirname(extensionScope, projectPath, extensionName)
 
-  console.log(root)
-
   // overwrite target dir
   if (shouldOverwrite) {
     fs.emptyDirSync(root)
@@ -238,7 +234,6 @@ async function init() {
     encoding: 'utf-8'
   })
   const pkgObj = JSON.parse(pkgJson)
-  console.log('239', isProjectScope)
   pkgObj.name = extensionName
   pkgObj.editor = '>=' + isProjectScope ? project?.version : editorVersion
   pkgObj.description = `i18n:${extensionName}.description`
