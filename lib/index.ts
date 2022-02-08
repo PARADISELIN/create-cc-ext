@@ -8,12 +8,12 @@ import fs from 'fs-extra'
 // @ts-ignore
 import Big from 'figlet/importable-fonts/Big'
 
+import { canSafelyOverwrite } from './utils'
 import {
-  canSafelyOverwrite,
-  getTargetDirname,
   getCocosEditorsInfo,
-  getCocosProjectsInfo
-} from './utils'
+  getCocosProjectsInfo,
+  getExtensionTargetPath
+} from './utils/cocos'
 
 figlet.parseFont('Big', Big)
 
@@ -132,11 +132,7 @@ const promptsQuestions: PromptObject[] = [
       const project =
         extensionScope === 0 ? projectNameChoices[projectIdx] : null
       const projectPath = project ? project.path : ''
-      const targetDirname = getTargetDirname(
-        extensionScope,
-        projectPath,
-        extensionName
-      )
+      const targetDirname = getExtensionTargetPath(extensionName, projectPath)
       return canSafelyOverwrite(targetDirname) ? null : 'confirm'
     },
     message: (prev, values) => {
@@ -144,11 +140,7 @@ const promptsQuestions: PromptObject[] = [
       const project =
         extensionScope === 0 ? projectNameChoices[projectIdx] : null
       const projectPath = project ? project.path : ''
-      const targetDirname = getTargetDirname(
-        extensionScope,
-        projectPath,
-        extensionName
-      )
+      const targetDirname = getExtensionTargetPath(extensionName, projectPath)
       const dirForPrompt = `Target directory "${green(targetDirname)}"`
 
       return `${dirForPrompt} is not empty. Remove existing files and continue?`
@@ -212,7 +204,7 @@ async function init() {
       ? projectNameChoices[projectIdx]
       : null
   const projectPath = project ? project.path : ''
-  const root = getTargetDirname(extensionScope, projectPath, extensionName)
+  const root = getExtensionTargetPath(extensionName, projectPath)
 
   // overwrite target dir
   if (shouldOverwrite) {
