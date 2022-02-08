@@ -163,8 +163,6 @@ async function init() {
     process.exit(1)
   }
 
-  console.log(result)
-
   const {
     extensionScope,
     editorVersion,
