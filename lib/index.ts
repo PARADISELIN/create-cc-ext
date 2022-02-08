@@ -2,20 +2,16 @@
 
 import path from 'path'
 import prompts, { PromptObject } from 'prompts'
-import { red, blue, green, bold } from 'kolorist'
-import figlet from 'figlet'
+import { red, green, bold } from 'kolorist'
 import fs from 'fs-extra'
-// @ts-ignore
-import Big from 'figlet/importable-fonts/Big'
 
 import { canSafelyOverwrite } from './utils'
+import { showBanner } from './utils/banner'
 import {
   getCocosEditorsInfo,
   getCocosProjectsInfo,
   getExtensionTargetPath
 } from './utils/cocos'
-
-figlet.parseFont('Big', Big)
 
 type PromptsResult = {
   extensionScope: number
@@ -28,7 +24,7 @@ type PromptsResult = {
 
 const defaultExtensionName = 'cc-extension'
 const scopeChoices = [
-  { title: 'Project', description: 'project extension' },
+  { title: 'Project', description: 'project-level extension' },
   { title: 'Global', description: 'global extension' }
 ]
 
@@ -69,18 +65,6 @@ const projectNameChoices = projectsInfo
     }))
   : []
 
-// TODO: 整理
-// Prompts:
-// - Extension scope: project / global
-//   - Project dir check
-// - Extension name:
-//   - whether to overwrite the existing directory or not?
-//   - enter a valid package name for package.json
-// - Engine version:
-//   - check cwd
-//   - package.json -> creator.version
-// - Extension template: blank / html / vue2.x / vue3.x / vue3.x + tsx
-
 const promptsQuestions: PromptObject[] = [
   {
     name: 'extensionScope',
@@ -92,10 +76,10 @@ const promptsQuestions: PromptObject[] = [
   {
     name: 'editorVersion',
     type: (prev, values) => {
-      if (!editorsInfo) {
+      if (values.extensionScope === 1 && !editorsInfo) {
         throw new Error(
           red('✖') +
-            ' Operation cancelled, you may not have any version of the editor installed.'
+            ' Operation cancelled, you may not have any versions of the editor installed.'
         )
       }
       return values.extensionScope === 1 && editorsInfo ? 'select' : null
@@ -124,24 +108,27 @@ const promptsQuestions: PromptObject[] = [
     message: 'Extension name:',
     initial: defaultExtensionName
   },
-  // TODO: optimize, encapsulate
   {
     name: 'shouldOverwrite',
     type: (prev, values) => {
-      const { extensionScope, extensionName, projectName: projectIdx } = values
-      const project =
-        extensionScope === 0 ? projectNameChoices[projectIdx] : null
+      const { extensionName, projectName: idx } = values
+      const project = idx !== undefined ? projectNameChoices[idx] : null
       const projectPath = project ? project.path : ''
-      const targetDirname = getExtensionTargetPath(extensionName, projectPath)
-      return canSafelyOverwrite(targetDirname) ? null : 'confirm'
+      const extensionTargetPath = getExtensionTargetPath(
+        extensionName,
+        projectPath
+      )
+      return canSafelyOverwrite(extensionTargetPath) ? null : 'confirm'
     },
     message: (prev, values) => {
-      const { extensionScope, extensionName, projectName: projectIdx } = values
-      const project =
-        extensionScope === 0 ? projectNameChoices[projectIdx] : null
+      const { extensionName, projectName: idx } = values
+      const project = idx !== undefined ? projectNameChoices[idx] : null
       const projectPath = project ? project.path : ''
-      const targetDirname = getExtensionTargetPath(extensionName, projectPath)
-      const dirForPrompt = `Target directory "${green(targetDirname)}"`
+      const extensionTargetPath = getExtensionTargetPath(
+        extensionName,
+        projectPath
+      )
+      const dirForPrompt = `Target directory "${green(extensionTargetPath)}"`
 
       return `${dirForPrompt} is not empty. Remove existing files and continue?`
     }
@@ -171,15 +158,7 @@ const promptsOptions = {
 }
 
 async function init() {
-  figlet('CC Extension', { font: 'Big' }, (err, data) => {
-    if (err) {
-      console.log(
-        `\n${blue('An easy way to create a cocos creator extension.')}\n`
-      )
-    } else {
-      console.log(blue(data as string))
-    }
-  })
+  showBanner()
 
   let result = {}
 
@@ -189,6 +168,8 @@ async function init() {
     console.log(cancelled.message)
     process.exit(1)
   }
+
+  console.log(result)
 
   const {
     extensionScope,
@@ -257,11 +238,12 @@ async function init() {
     encoding: 'utf-8'
   })
   const extensionNamePlaceholder = '{{ extensionName }}'
+  const extensionNameRegexp = /{{\s?extensionName\s?}}/g
   if (readmeEN.includes(extensionNamePlaceholder)) {
-    readmeEN = readmeEN.replaceAll(extensionNamePlaceholder, extensionName)
+    readmeEN = readmeEN.replace(extensionNameRegexp, extensionName)
   }
   if (readmeCN.includes(extensionNamePlaceholder)) {
-    readmeCN = readmeCN.replaceAll(extensionNamePlaceholder, extensionName)
+    readmeCN = readmeCN.replace(extensionNameRegexp, extensionName)
   }
   fs.writeFileSync(path.resolve(root, 'README.md'), readmeEN)
   fs.writeFileSync(path.resolve(root, 'README-CN.md'), readmeCN)

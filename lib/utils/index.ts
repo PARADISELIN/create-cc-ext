@@ -1,9 +1,4 @@
-import os from 'os'
-import path from 'path'
 import fs from 'fs-extra'
-
-import { getGlobalCreatorExtensionPath } from './cocos'
-import { EXTENSION_DIRNAME } from './constants'
 
 export function isValidPackageName(projectName: string): boolean {
   return /^(?:@[a-z0-9-*~][a-z0-9-*.,_~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/.test(
