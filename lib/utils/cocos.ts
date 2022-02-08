@@ -31,6 +31,12 @@ type ProjectProfile = {
   mtime: number
 }
 
+type ProjectPromptItem = {
+  title: string
+  path: string
+  description: string
+}
+
 export function getGlobalCocosPath() {
   return path.join(os.homedir(), GLOBAL_COCOS_DIRNAME)
 }
@@ -111,16 +117,17 @@ export function getCocosProjectsInfo(): ProjectProfile[] | null {
 
 /**
  * get the final extension target path
- * if `projectPath` is valid, the extension is a project-level extension
+ * if `project` is valid, the extension is a project-level extension
  * @param {string} extensionName
- * @param {string} [projectPath]
+ * @param {ProjectPromptItem | null} project
  */
 export function getExtensionTargetPath(
   extensionName: string,
-  projectPath?: string
+  project: ProjectPromptItem | null
 ): string {
   // project-level
-  if (projectPath) {
+  if (project != null) {
+    const projectPath = project.path
     const projectExtensionPath = path.join(projectPath, EXTENSION_DIRNAME)
 
     if (!fs.pathExistsSync(projectExtensionPath)) {

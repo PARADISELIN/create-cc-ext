@@ -110,23 +110,17 @@ const promptsQuestions: PromptObject[] = [
   },
   {
     name: 'shouldOverwrite',
-    type: (prev, values) => {
-      const { extensionName, projectName: idx } = values
-      const project = idx !== undefined ? projectNameChoices[idx] : null
-      const projectPath = project ? project.path : ''
+    type: (prev, { extensionName, projectName: idx }) => {
       const extensionTargetPath = getExtensionTargetPath(
         extensionName,
-        projectPath
+        idx !== undefined ? projectNameChoices[idx] : null
       )
       return canSafelyOverwrite(extensionTargetPath) ? null : 'confirm'
     },
-    message: (prev, values) => {
-      const { extensionName, projectName: idx } = values
-      const project = idx !== undefined ? projectNameChoices[idx] : null
-      const projectPath = project ? project.path : ''
+    message: (prev, { extensionName, projectName: idx }) => {
       const extensionTargetPath = getExtensionTargetPath(
         extensionName,
-        projectPath
+        idx !== undefined ? projectNameChoices[idx] : null
       )
       const dirForPrompt = `Target directory "${green(extensionTargetPath)}"`
 
