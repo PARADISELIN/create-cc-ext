@@ -12,15 +12,11 @@ import {
   getCocosProjectsInfo,
   getExtensionTargetPath
 } from './utils/cocos'
-
-type PromptsResult = {
-  extensionScope: number
-  editorVersion?: string
-  projectName?: string
-  extensionName: string
-  shouldOverwrite?: boolean
-  extensionTemplate: number
-}
+import type {
+  PromptsResult,
+  ProjectPromptItem,
+  EditorPromptItem
+} from './types'
 
 const defaultExtensionName = 'cc-extension'
 const scopeChoices = [
@@ -49,7 +45,7 @@ const templateChoices = [
 ]
 
 const editorsInfo = getCocosEditorsInfo()
-const editorVersionChoices = editorsInfo
+const editorVersionChoices: EditorPromptItem[] = editorsInfo
   ? editorsInfo.map((item) => ({
       title: item.version,
       description: item.file
@@ -57,7 +53,7 @@ const editorVersionChoices = editorsInfo
   : []
 
 const projectsInfo = getCocosProjectsInfo()
-const projectNameChoices = projectsInfo
+const projectNameChoices: ProjectPromptItem[] = projectsInfo
   ? projectsInfo.map((item) => ({
       title: item.name,
       path: item.path,

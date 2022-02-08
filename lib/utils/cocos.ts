@@ -7,35 +7,7 @@ import {
   GLOBAL_CREATOR_DIRNAME,
   EXTENSION_DIRNAME
 } from './constants'
-
-// Cocos Creator Editor Profile
-type EditorProfile = {
-  type: string
-  version: string
-  ctime: number
-  file: string
-  url: string
-  progress: string
-  state: string
-  percent: number
-  unzipDist: string
-}
-
-// Cocos Project Profile
-type ProjectProfile = {
-  name: string
-  path: string
-  type: string
-  version: string
-  otime: number
-  mtime: number
-}
-
-type ProjectPromptItem = {
-  title: string
-  path: string
-  description: string
-}
+import type { EditorProfile, ProjectProfile, ProjectPromptItem } from '../types'
 
 export function getGlobalCocosPath() {
   return path.join(os.homedir(), GLOBAL_COCOS_DIRNAME)
