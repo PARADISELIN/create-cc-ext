@@ -164,22 +164,21 @@ async function init() {
   }
 
   const {
-    extensionScope,
     editorVersion,
     projectName: projectIdx,
     extensionTemplate,
     extensionName,
     shouldOverwrite
   } = result as PromptsResult
-  const isProjectScope = extensionScope === 0
-  const project =
-    isProjectScope && projectIdx !== undefined
-      ? projectNameChoices[projectIdx]
-      : null
-  const projectPath = project ? project.path : ''
-  const root = getExtensionTargetPath(extensionName, projectPath)
 
-  // overwrite target dir
+  const isProjectScope = projectIdx !== undefined
+  const project = isProjectScope ? projectNameChoices[projectIdx] : null
+  const root = getExtensionTargetPath(
+    extensionName,
+    isProjectScope ? projectNameChoices[projectIdx] : null
+  )
+
+  // overwrite target path
   if (shouldOverwrite) {
     fs.emptyDirSync(root)
   } else if (!fs.existsSync(root)) {
@@ -188,14 +187,15 @@ async function init() {
 
   console.log(`\nScaffolding project in ${root}...\n`)
 
-  const templateRoot = path.resolve(__dirname, 'template')
-  const templateDir = path.resolve(
-    templateRoot,
+  // extension default template path
+  const templatePath = path.resolve(
+    __dirname,
+    'template',
     templateChoices[extensionTemplate].dirname
   )
 
   // package.json: update name and write package.json
-  const pkgJson = fs.readFileSync(path.resolve(templateDir, 'package.json'), {
+  const pkgJson = fs.readFileSync(path.resolve(templatePath, 'package.json'), {
     encoding: 'utf-8'
   })
   const pkgObj = JSON.parse(pkgJson)
@@ -223,10 +223,10 @@ async function init() {
 
   // README: write readme
   // TODO: use js string generate, do not read file
-  let readmeEN = fs.readFileSync(path.resolve(templateDir, 'README.md'), {
+  let readmeEN = fs.readFileSync(path.resolve(templatePath, 'README.md'), {
     encoding: 'utf-8'
   })
-  let readmeCN = fs.readFileSync(path.resolve(templateDir, 'README-CN.md'), {
+  let readmeCN = fs.readFileSync(path.resolve(templatePath, 'README-CN.md'), {
     encoding: 'utf-8'
   })
   const extensionNamePlaceholder = '{{ extensionName }}'
@@ -244,7 +244,7 @@ async function init() {
   const filterFunc = (src: string): boolean => {
     return !(src.includes('package.json') || src.includes('README'))
   }
-  fs.copySync(templateDir, root, { filter: filterFunc })
+  fs.copySync(templatePath, root, { filter: filterFunc })
 
   // finish log
   console.log(`\nDone. Now run:\n`)

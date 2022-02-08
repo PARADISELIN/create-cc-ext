@@ -125,17 +125,17 @@ export function getExtensionTargetPath(
   extensionName: string,
   project: ProjectPromptItem | null
 ): string {
-  // project-level
   if (project != null) {
     const projectPath = project.path
     const projectExtensionPath = path.join(projectPath, EXTENSION_DIRNAME)
 
+    // by default, the `extension` directory does not exist for the project
     if (!fs.pathExistsSync(projectExtensionPath)) {
       fs.mkdirSync(projectExtensionPath)
     }
+
     return path.join(projectPath, EXTENSION_DIRNAME, extensionName)
   }
 
-  // global
   return path.join(getGlobalCreatorExtensionPath(), extensionName)
 }
