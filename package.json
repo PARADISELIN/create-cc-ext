@@ -1,6 +1,6 @@
 {
   "name": "create-cc-ext",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A CLI tool for creating cocos creator extension.",
   "author": "paradise <lin92731@outlook.com>",
   "license": "MIT",
