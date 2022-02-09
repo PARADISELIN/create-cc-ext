@@ -57,7 +57,7 @@
     "rimraf": "^3.0.2"
   },
   "lint-staged": {
-    "src/**/*.{js,ts}": [
+    "lib/**/*.{js,ts}": [
       "prettier-eslint --write",
       "eslint --fix"
     ]
