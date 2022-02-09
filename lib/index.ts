@@ -13,6 +13,7 @@ import {
   getExtensionTargetPath
 } from './utils/cocos'
 import processPackageJson from './utils/processPackageJson'
+import processReadme from './utils/processReadme'
 import type { PromptsResult } from './types'
 
 const defaultExtensionName = 'cc-extension'
@@ -195,23 +196,8 @@ async function init() {
   processPackageJson(packageJsonOptions)
 
   // README: write readme
-  // TODO: use js string generate, do not read file
-  let readmeEN = fs.readFileSync(path.resolve(templatePath, 'README.md'), {
-    encoding: 'utf-8'
-  })
-  let readmeCN = fs.readFileSync(path.resolve(templatePath, 'README-CN.md'), {
-    encoding: 'utf-8'
-  })
-  const extensionNamePlaceholder = '{{ extensionName }}'
-  const extensionNameRegexp = /{{\s?extensionName\s?}}/g
-  if (readmeEN.includes(extensionNamePlaceholder)) {
-    readmeEN = readmeEN.replace(extensionNameRegexp, extensionName)
-  }
-  if (readmeCN.includes(extensionNamePlaceholder)) {
-    readmeCN = readmeCN.replace(extensionNameRegexp, extensionName)
-  }
-  fs.writeFileSync(path.resolve(targetPath, 'README.md'), readmeEN)
-  fs.writeFileSync(path.resolve(targetPath, 'README-CN.md'), readmeCN)
+  const readmeOptions = { extensionName, templatePath, targetPath }
+  processReadme(readmeOptions)
 
   // write base file
   const filterFunc = (src: string): boolean => {
