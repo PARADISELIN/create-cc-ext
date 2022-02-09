@@ -1,6 +1,6 @@
 {
   "name": "create-cc-ext",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A CLI tool for creating cocos creator extension.",
   "author": "paradise <lin92731@outlook.com>",
   "license": "MIT",
@@ -31,6 +31,10 @@
   },
   "homepage": "https://github.com/PARADISELIN/create-cc-ext#readme",
   "dependencies": {
+    "figlet": "^1.5.2",
+    "fs-extra": "^10.0.0",
+    "kolorist": "^1.5.1",
+    "prompts": "^2.4.2",
     "typescript": "^4.5.4"
   },
   "devDependencies": {
@@ -48,13 +52,9 @@
     "eslint": "^8.6.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "figlet": "^1.5.2",
-    "fs-extra": "^10.0.0",
     "husky": "^7.0.4",
-    "kolorist": "^1.5.1",
     "lint-staged": "^12.1.7",
     "prettier": "^2.5.1",
-    "prompts": "^2.4.2",
     "rimraf": "^3.0.2"
   },
   "lint-staged": {
