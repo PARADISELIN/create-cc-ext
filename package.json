@@ -21,6 +21,7 @@
     "prepare": "husky install",
     "commit": "cz"
   },
+  "keywords": ["cocos", "extension", "cocos creator"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/PARADISELIN/create-cc-ext.git"
