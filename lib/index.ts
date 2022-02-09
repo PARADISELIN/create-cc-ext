@@ -12,7 +12,8 @@ import {
   getCocosProjectsInfo,
   getExtensionTargetPath
 } from './utils/cocos'
-import type { PromptsResult, ProjectProfile } from './types'
+import processPackageJson from './utils/processPackageJson'
+import type { PromptsResult } from './types'
 
 const defaultExtensionName = 'cc-extension'
 const scopeChoices = [
@@ -165,16 +166,16 @@ async function init() {
   const isProjectScope = projectIdx !== undefined
   const project =
     isProjectScope && projectsInfo ? projectsInfo[projectIdx] : null
-  const root = getExtensionTargetPath(extensionName, project)
+  const targetPath = getExtensionTargetPath(extensionName, project)
 
   // overwrite target path
   if (shouldOverwrite) {
-    fs.emptyDirSync(root)
-  } else if (!fs.existsSync(root)) {
-    fs.mkdirSync(root)
+    fs.emptyDirSync(targetPath)
+  } else if (!fs.existsSync(targetPath)) {
+    fs.mkdirSync(targetPath)
   }
 
-  console.log(`\nScaffolding project in ${root}...\n`)
+  console.log(`\nScaffolding project in ${targetPath}...\n`)
 
   // extension default template path
   const templatePath = path.resolve(
@@ -184,31 +185,14 @@ async function init() {
   )
 
   // package.json: update name and write package.json
-  const pkgJson = fs.readFileSync(path.resolve(templatePath, 'package.json'), {
-    encoding: 'utf-8'
-  })
-  const pkgObj = JSON.parse(pkgJson)
-  pkgObj.name = extensionName
-  pkgObj.editor = '>=' + isProjectScope ? project?.version : editorVersion
-  pkgObj.description = `i18n:${extensionName}.description`
-
-  // FIXME: this is temporary handle
-  if (pkgObj.panels) {
-    pkgObj.panels.default.title = `${extensionName} Default Panel`
+  const packageJsonOptions = {
+    extensionName,
+    templatePath,
+    targetPath,
+    editorVersion,
+    project
   }
-  if (pkgObj.contributions) {
-    pkgObj.contributions.menu.forEach(
-      (item: { path: string }, index: number) =>
-        (item.path = `i18n:menu.${
-          index === 0 ? 'panel' : 'develop'
-        }/${extensionName}`)
-    )
-  }
-
-  fs.writeFileSync(
-    path.resolve(root, 'package.json'),
-    JSON.stringify(pkgObj, null, 2)
-  )
+  processPackageJson(packageJsonOptions)
 
   // README: write readme
   // TODO: use js string generate, do not read file
@@ -226,21 +210,21 @@ async function init() {
   if (readmeCN.includes(extensionNamePlaceholder)) {
     readmeCN = readmeCN.replace(extensionNameRegexp, extensionName)
   }
-  fs.writeFileSync(path.resolve(root, 'README.md'), readmeEN)
-  fs.writeFileSync(path.resolve(root, 'README-CN.md'), readmeCN)
+  fs.writeFileSync(path.resolve(targetPath, 'README.md'), readmeEN)
+  fs.writeFileSync(path.resolve(targetPath, 'README-CN.md'), readmeCN)
 
   // write base file
   const filterFunc = (src: string): boolean => {
     return !(src.includes('package.json') || src.includes('README'))
   }
-  fs.copySync(templatePath, root, { filter: filterFunc })
+  fs.copySync(templatePath, targetPath, { filter: filterFunc })
 
   // finish log
   console.log(`\nDone. Now run:\n`)
 
   const cwd = process.cwd()
-  if (root !== cwd) {
-    console.log(`  ${bold(green(`cd ${root}`))}\r\n`)
+  if (targetPath !== cwd) {
+    console.log(`  ${bold(green(`cd ${targetPath}`))}\r\n`)
   }
   console.log(`  ${bold(green('yarn install'))}`)
   console.log(`  ${bold(green('yarn build'))}`)
