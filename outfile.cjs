@@ -10942,8 +10942,9 @@ function getCocosProjectsInfo() {
     };
   });
 }
-function getExtensionTargetPath(extensionName, projectPath) {
-  if (projectPath) {
+function getExtensionTargetPath(extensionName, project) {
+  if (project != null) {
+    const projectPath = project.path;
     const projectExtensionPath = import_path.default.join(projectPath, EXTENSION_DIRNAME);
     if (!import_fs_extra2.default.pathExistsSync(projectExtensionPath)) {
       import_fs_extra2.default.mkdirSync(projectExtensionPath);
@@ -11027,18 +11028,12 @@ var promptsQuestions = [
   },
   {
     name: "shouldOverwrite",
-    type: (prev, values) => {
-      const { extensionName, projectName: idx } = values;
-      const project = idx !== void 0 ? projectNameChoices[idx] : null;
-      const projectPath = project ? project.path : "";
-      const extensionTargetPath = getExtensionTargetPath(extensionName, projectPath);
+    type: (prev, { extensionName, projectName: idx }) => {
+      const extensionTargetPath = getExtensionTargetPath(extensionName, idx !== void 0 ? projectNameChoices[idx] : null);
       return canSafelyOverwrite(extensionTargetPath) ? null : "confirm";
     },
-    message: (prev, values) => {
-      const { extensionName, projectName: idx } = values;
-      const project = idx !== void 0 ? projectNameChoices[idx] : null;
-      const projectPath = project ? project.path : "";
-      const extensionTargetPath = getExtensionTargetPath(extensionName, projectPath);
+    message: (prev, { extensionName, projectName: idx }) => {
+      const extensionTargetPath = getExtensionTargetPath(extensionName, idx !== void 0 ? projectNameChoices[idx] : null);
       const dirForPrompt = `Target directory "${green(extensionTargetPath)}"`;
       return `${dirForPrompt} is not empty. Remove existing files and continue?`;
     }
@@ -11075,19 +11070,16 @@ function init() {
       console.log(cancelled.message);
       process.exit(1);
     }
-    console.log(result);
     const {
-      extensionScope,
       editorVersion,
       projectName: projectIdx,
       extensionTemplate,
       extensionName,
       shouldOverwrite
     } = result;
-    const isProjectScope = extensionScope === 0;
-    const project = isProjectScope && projectIdx !== void 0 ? projectNameChoices[projectIdx] : null;
-    const projectPath = project ? project.path : "";
-    const root = getExtensionTargetPath(extensionName, projectPath);
+    const isProjectScope = projectIdx !== void 0;
+    const project = isProjectScope ? projectNameChoices[projectIdx] : null;
+    const root = getExtensionTargetPath(extensionName, isProjectScope ? projectNameChoices[projectIdx] : null);
     if (shouldOverwrite) {
       import_fs_extra3.default.emptyDirSync(root);
     } else if (!import_fs_extra3.default.existsSync(root)) {
@@ -11096,9 +11088,8 @@ function init() {
     console.log(`
 Scaffolding project in ${root}...
 `);
-    const templateRoot = import_path2.default.resolve(__dirname, "template");
-    const templateDir = import_path2.default.resolve(templateRoot, templateChoices[extensionTemplate].dirname);
-    const pkgJson = import_fs_extra3.default.readFileSync(import_path2.default.resolve(templateDir, "package.json"), {
+    const templatePath = import_path2.default.resolve(__dirname, "template", templateChoices[extensionTemplate].dirname);
+    const pkgJson = import_fs_extra3.default.readFileSync(import_path2.default.resolve(templatePath, "package.json"), {
       encoding: "utf-8"
     });
     const pkgObj = JSON.parse(pkgJson);
@@ -11112,10 +11103,10 @@ Scaffolding project in ${root}...
       pkgObj.contributions.menu.forEach((item, index) => item.path = `i18n:menu.${index === 0 ? "panel" : "develop"}/${extensionName}`);
     }
     import_fs_extra3.default.writeFileSync(import_path2.default.resolve(root, "package.json"), JSON.stringify(pkgObj, null, 2));
-    let readmeEN = import_fs_extra3.default.readFileSync(import_path2.default.resolve(templateDir, "README.md"), {
+    let readmeEN = import_fs_extra3.default.readFileSync(import_path2.default.resolve(templatePath, "README.md"), {
       encoding: "utf-8"
     });
-    let readmeCN = import_fs_extra3.default.readFileSync(import_path2.default.resolve(templateDir, "README-CN.md"), {
+    let readmeCN = import_fs_extra3.default.readFileSync(import_path2.default.resolve(templatePath, "README-CN.md"), {
       encoding: "utf-8"
     });
     const extensionNamePlaceholder = "{{ extensionName }}";
@@ -11131,7 +11122,7 @@ Scaffolding project in ${root}...
     const filterFunc = (src) => {
       return !(src.includes("package.json") || src.includes("README"));
     };
-    import_fs_extra3.default.copySync(templateDir, root, { filter: filterFunc });
+    import_fs_extra3.default.copySync(templatePath, root, { filter: filterFunc });
     console.log(`
 Done. Now run:
 `);

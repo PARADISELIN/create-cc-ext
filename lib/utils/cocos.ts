@@ -7,7 +7,7 @@ import {
   GLOBAL_CREATOR_DIRNAME,
   EXTENSION_DIRNAME
 } from './constants'
-import type { EditorProfile, ProjectProfile, ProjectPromptItem } from '../types'
+import type { EditorProfile, ProjectProfile } from '../types'
 
 export function getGlobalCocosPath() {
   return path.join(os.homedir(), GLOBAL_COCOS_DIRNAME)
@@ -91,11 +91,11 @@ export function getCocosProjectsInfo(): ProjectProfile[] | null {
  * get the final extension target path
  * if `project` is valid, the extension is a project-level extension
  * @param {string} extensionName
- * @param {ProjectPromptItem | null} project
+ * @param {ProjectProfile | null} project
  */
 export function getExtensionTargetPath(
   extensionName: string,
-  project: ProjectPromptItem | null
+  project: ProjectProfile | null
 ): string {
   if (project != null) {
     const projectPath = project.path

@@ -20,11 +20,6 @@ export type EditorProfile = {
   unzipDist: string
 }
 
-export type EditorPromptItem = {
-  title: string
-  description: string
-}
-
 // Cocos Project Profile
 export type ProjectProfile = {
   name: string
@@ -33,10 +28,4 @@ export type ProjectProfile = {
   version: string
   otime: number
   mtime: number
-}
-
-export type ProjectPromptItem = {
-  title: string
-  path: string
-  description: string
 }

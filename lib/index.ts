@@ -12,11 +12,7 @@ import {
   getCocosProjectsInfo,
   getExtensionTargetPath
 } from './utils/cocos'
-import type {
-  PromptsResult,
-  ProjectPromptItem,
-  EditorPromptItem
-} from './types'
+import type { PromptsResult, ProjectProfile } from './types'
 
 const defaultExtensionName = 'cc-extension'
 const scopeChoices = [
@@ -45,7 +41,7 @@ const templateChoices = [
 ]
 
 const editorsInfo = getCocosEditorsInfo()
-const editorVersionChoices: EditorPromptItem[] = editorsInfo
+const editorVersionChoices = editorsInfo
   ? editorsInfo.map((item) => ({
       title: item.version,
       description: item.file
@@ -53,10 +49,9 @@ const editorVersionChoices: EditorPromptItem[] = editorsInfo
   : []
 
 const projectsInfo = getCocosProjectsInfo()
-const projectNameChoices: ProjectPromptItem[] = projectsInfo
+const projectNameChoices = projectsInfo
   ? projectsInfo.map((item) => ({
       title: item.name,
-      path: item.path,
       description: item.path
     }))
   : []
@@ -109,14 +104,14 @@ const promptsQuestions: PromptObject[] = [
     type: (prev, { extensionName, projectName: idx }) => {
       const extensionTargetPath = getExtensionTargetPath(
         extensionName,
-        idx !== undefined ? projectNameChoices[idx] : null
+        idx !== undefined && projectsInfo ? projectsInfo[idx] : null
       )
       return canSafelyOverwrite(extensionTargetPath) ? null : 'confirm'
     },
     message: (prev, { extensionName, projectName: idx }) => {
       const extensionTargetPath = getExtensionTargetPath(
         extensionName,
-        idx !== undefined ? projectNameChoices[idx] : null
+        idx !== undefined && projectsInfo ? projectsInfo[idx] : null
       )
       const dirForPrompt = `Target directory "${green(extensionTargetPath)}"`
 
@@ -168,11 +163,9 @@ async function init() {
   } = result as PromptsResult
 
   const isProjectScope = projectIdx !== undefined
-  const project = isProjectScope ? projectNameChoices[projectIdx] : null
-  const root = getExtensionTargetPath(
-    extensionName,
-    isProjectScope ? projectNameChoices[projectIdx] : null
-  )
+  const project =
+    isProjectScope && projectsInfo ? projectsInfo[projectIdx] : null
+  const root = getExtensionTargetPath(extensionName, project)
 
   // overwrite target path
   if (shouldOverwrite) {
