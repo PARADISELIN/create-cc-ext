@@ -1,6 +1,6 @@
 {
   "name": "create-cc-ext",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "A CLI tool for creating cocos creator extension.",
   "author": "paradise <lin92731@outlook.com>",
   "license": "MIT",
@@ -19,9 +19,14 @@
     "format": "prettier --write",
     "build": "esbuild --bundle lib/index.ts --format=cjs --platform=node --outfile=outfile.cjs",
     "prepare": "husky install",
-    "commit": "cz"
+    "commit": "cz",
+    "release": "standard-version"
   },
-  "keywords": ["cocos", "extension", "cocos creator"],
+  "keywords": [
+    "cocos",
+    "extension",
+    "cocos creator"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/PARADISELIN/create-cc-ext.git"
@@ -55,7 +60,8 @@
     "husky": "^7.0.4",
     "lint-staged": "^12.1.7",
     "prettier": "^2.5.1",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "standard-version": "^9.3.2"
   },
   "lint-staged": {
     "lib/**/*.{js,ts}": [
